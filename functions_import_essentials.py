@@ -327,6 +327,47 @@ def plot_track_time(data):
     draw_box()
     plt.show()
     return
+
+'''
+def plot_time_in_track(data):
+    if len(data[0]) == 1:
+        print("Invalid data, plot is not done")
+        return
+    x = flash_geom_x[np.array(data[0]).astype(int)]
+    y = flash_geom_y[np.array(data[0]).astype(int)]
+    plt.figure(figsize = (8,6))
+    plt.scatter(x,y, c = data[1], cmap = "jet", vmin = np.min(data[1])-1, vmax = np.max(data[1])+1 )
+    plt.colorbar(label = "time in track [s]")
+    plt.xlabel("Camera x-pos", fontsize = 14)
+    plt.ylabel("Camera y-pos", fontsize = 14)
+    draw_box()
+    plt.show()
+    return
+'''
+
+def plot_time_in_track(tracks):
+    if len(tracks[0][0]) == 1:
+        print("Invalid data, plot is not done")
+        return
+    data = [np.array([]),np.array([]),np.array([])]
+    for N in range(len(tracks)):
+        data[1] = np.append(data[1], np.array(tracks[N][1])-tracks[N][1][0])
+        data[0] = np.append(data[0], np.array(tracks[N][0]))
+        data[2] = np.append(data[2], np.array(tracks[N][2]))
+    x = flash_geom_x[np.array(data[0]).astype(int)]
+    y = flash_geom_y[np.array(data[0]).astype(int)]
+    plt.figure(figsize = (6,4), constrained_layout = True)
+    plt.scatter(x,y, c = data[1], cmap = "jet", 
+                vmin = np.min(data[1])-1, vmax = np.max(data[1])+1,
+                marker = "H", s = 30)
+    plt.colorbar(label = "Time in Track [s]")
+    plt.xlabel("Y-Coordinate [m]")#, fontsize = 14)
+    plt.ylabel("X-Coordinate [m]")#, fontsize = 14)
+    draw_box()
+    return
+
+
+
 def plot_track_brightness(data):
     if len(data[0]) == 1:
         print("Invalid data, plot is not done")
@@ -340,7 +381,25 @@ def plot_track_brightness(data):
     draw_box()
     plt.show()
     return
-
+def plot_avg_pix_brightness(data):
+    if len(data[0]) == 1:
+        print("Invalid data, plot is not done")
+        return
+    x = flash_geom_x[np.array(data[0]).astype(int)]
+    y = flash_geom_y[np.array(data[0]).astype(int)]
+    unique_pix = np.unique(data[0])
+    avg_brightness = np.array([np.average(data[2][np.array([idx for idx in range(len(data[0])) 
+                                                            if data[0][idx] == pix])]) for pix in unique_pix])
+    x = flash_geom_x[np.array(unique_pix).astype(int)]
+    y = flash_geom_y[np.array(unique_pix).astype(int)]
+    plt.figure(figsize = (8,6))
+    plt.scatter(x,y, c = avg_brightness, cmap = "jet", vmin = 900, vmax = np.max(avg_brightness))
+    plt.colorbar(label = "Brightness [MHz]")
+    plt.xlabel("Camera x-pos", fontsize = 14)
+    plt.ylabel("Camera y-pos", fontsize = 14)
+    draw_box()
+    plt.show()
+    return
 '''
 @jit 
 ##################Best Sorter yet##################
@@ -418,7 +477,6 @@ def track_sorter(dict_pix, dict_tmp, dict_brightness, typed_nn_pixels):#typed_nn
                     break
         if appended_to_track == False:
             tracks.append([[float(pix[i])],[float(tmp[i])], [float(brightness[i])]])
-
     possible_meteorites = List([[[-1.],[-1.],[-1.]]])
     to_remove = np.full((1,len(tracks)), -1)[0]   
     for N in range(len(tracks)):        
@@ -441,12 +499,14 @@ def track_sorter(dict_pix, dict_tmp, dict_brightness, typed_nn_pixels):#typed_nn
             possible_meteorites.append(tracks[N])
             to_remove[N] = N
             continue
-        velo = get_velocity()
-            
+        velo = get_velocity(tracks[N][0], tracks[N][1])
+        if velo <0.008:
+            possible_meteorites.append(tracks[N])
+            to_remove[N] = N
+            continue
     del possible_meteorites[0]
     if len(possible_meteorites)==0:
         possible_meteorites = List([[[-1.],[-1.],[-1.]]])
-
     to_remove = to_remove[to_remove != -1]
     for i in range(len(to_remove)):
         del tracks[to_remove[-(i+1)]]
