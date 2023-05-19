@@ -69,5 +69,5 @@ Create plots using "run_properties.py".
 "single_eval_hillas.py"
 Writes hillas parameter during and away from the trail to file. 
 
-Location of all used Hillasparameter files: 
+Location of all used Hillasparameter files on MPIK cluster (for H.E.S.S. members): 
 "/lfs/l7/hess/users/spencers/realdata/Hillas0510_alldata/"
