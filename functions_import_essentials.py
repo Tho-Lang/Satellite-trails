@@ -1,4 +1,25 @@
-#load camera geometry from txt file
+########################################################
+#This is a collection of all functions used during the 
+#developement of the trail finding.
+#Also by executing this the variables nn_pix and typed_nn_pix 
+#are set, defining the neighbourhood pixel IDs of each of the 
+#1764 pixels as a nested List and a numba.typed.List() respectively.
+#
+#
+#The main functions to read the data and find the tracks are:
+#read_single_run_utc_cut(nrun)
+#track_sorter_fast(data)
+#
+#To display them the following functions are used: 
+#plot_time_in_track(track)
+#plot_brightness_in_track(track)
+#
+#This collection of functions still contains some other functions
+#that were used during the developement of the algorithm.
+#
+
+########################################################
+
 import numpy as np
 import pandas as pd
 from scipy import ndimage
@@ -18,14 +39,19 @@ from numba import jit,njit,int32,float32
 from numba.typed import List
 
 
-#Get camera geometry from file
-home_path = "/home/tholang/"
-path_eval = home_path+"eval_high_data_utc/high_pixel/"
-path_eval_cut = home_path+"eval_high_data_utc_cut/high_pixel/"
+home_path = os.getcwd()
+
+#
+path_eval = os.path.join(os.path.join(home_path,"eval_high_data_utc"),"high_pixel")
+path_eval_cut = os.path.join(os.path.join(home_path,"eval_high_data_utc_cut"),"high_pixel")
 print("path_eval is set to: \""+path_eval+"\"")
-flash_geom_id = np.loadtxt(home_path+"scripts/flashcam_geometry.txt", usecols = 0, delimiter=";").astype(int)
-flash_geom_x = np.loadtxt(home_path+"scripts/flashcam_geometry.txt", usecols = 1, delimiter=";")
-flash_geom_y = np.loadtxt(home_path+"scripts/flashcam_geometry.txt", usecols = 2, delimiter=";")
+print("path_eval_cut is set to: \""+path_eval_cut+"\"")
+
+
+#Get camera geometry from file
+flash_geom_id = np.loadtxt(os.path.join(home_path,"flashcam_geometry.txt"), usecols = 0, delimiter=";").astype(int)
+flash_geom_x = np.loadtxt(os.path.join(home_path,"flashcam_geometry.txt"), usecols = 1, delimiter=";")
+flash_geom_y = np.loadtxt(os.path.join(home_path,"flashcam_geometry.txt"), usecols = 2, delimiter=";")
 flash_geom_x = np.array(flash_geom_x)
 flash_geom_y = np.array(flash_geom_y)
 a = np.around(np.sort(np.unique(flash_geom_x)),5)
@@ -34,9 +60,8 @@ sort_x = np.around(np.sort(np.unique(flash_geom_x)),5)
 sort_y = np.around(np.sort(np.unique(flash_geom_y)),5)
 min_x_dif = a[1]-a[0]
 min_y_dif = b[1]-b[0]
-#Only used for old function, that is not used anymore
-#hessall_nruns = np.genfromtxt(home_path+"hessall_all_tels.txt").astype(int)
 
+#Produces list of list of neighbourhood pixels for each pixel
 def get_nn_pix(size):
     nn_pix = []
     for pix in flash_geom_id:
@@ -48,6 +73,8 @@ def get_nn_pix(size):
     return nn_pix
 
 nn_pix = get_nn_pix(10)
+
+#Same as above, but using numba.typed.List() for nested lists
 def get_typed_nn_pix(size):
     nn_pix = List()
     for pix in flash_geom_id:
@@ -59,8 +86,9 @@ def get_typed_nn_pix(size):
     return nn_pix
 
 typed_nn_pix = get_typed_nn_pix(10)
-print("get_nn_pix(size) mit nn_pix, bzw. typed_nn_pix for @jit")
 
+
+#Produce arrays of x and y coordinates for array of pixel IDs
 @jit
 def pix_to_xy(trail_pix):
     x = np.array([flash_geom_x[int(trail_pix[0])]])
@@ -70,6 +98,7 @@ def pix_to_xy(trail_pix):
         y = np.concatenate((y, np.array([flash_geom_y[int(trail_pix[i])]])))    
     return x, y
 
+#Simple function for a scatter plot
 def plot_scatter(x, y, z):
     #fig= plt.figure(figsize=(6,5), )
     plt.scatter(x,y,c=z, cmap = "jet")
@@ -80,6 +109,9 @@ def plot_scatter(x, y, z):
     plt.title("Run {}".format(nrun)+", CT {}".format(telId))
     #cbar = plt.colorbar()
     #cbar.set_label("Time  in run [s]")
+    
+    
+#Base function for the following two
 def plot_from_pix(pix, z):
     x = []
     y = []
@@ -93,6 +125,7 @@ def plot_from_pix(pix, z):
     plt.ylabel("Camera y-pos")
     return
 
+#
 def plot_brightness_from_pix(Data):
     fig = plt.figure(figsize = (8,6))
     #Data should be in form of [pix, time, brightness]
@@ -115,7 +148,7 @@ def plot_time_from_pix(Data):
     cbar.set_label("Time in run [s]")
     return
 
-
+#taking all outer pixel positions and draw the hexagon
 def draw_box():
     mask_x_top = np.around(np.array(flash_geom_x), 5) == np.max(sort_x)
     mask_x_bot = np.around(np.array(flash_geom_x), 5) == np.min(sort_x)
@@ -171,7 +204,7 @@ def draw_box():
     return 
 
 
-
+#older version used to read in files before the 900MHz cut was applied
 def read_single_run(nrun):
     runs_directory = "run"+str(nrun-nrun%200)+"-"+str(nrun-nrun%200+199)
     path_eval_runs = path_eval+runs_directory
@@ -195,9 +228,9 @@ def read_single_run(nrun):
     os.chdir(home_path)
     return new_high_pixel
 
+#get starting time of run, which is subtracted from unix times to get time in run
+#return 0 if stating time is not found
 def get_start_time(nrun):
-    #get starting time of run, which is subtracted from unix times to get time in run
-    #return 0 if stating time is not found
     if type(nrun) != type(1):
         print("use int entry")
         return 0
@@ -216,7 +249,10 @@ def get_start_time(nrun):
     hfile.close()
     return t0
 
-
+#Use this to read in data of a specific run number
+#Please ignore the utc in the naming, the time in the files is 
+#actually in unix time.
+#The time in the output gives the time in the run in seconds.
 def read_single_run_utc_cut(nrun):
     runs_directory = "run"+str(nrun-nrun%200)+"-"+str(nrun-nrun%200+199)+"/"
     try:
@@ -286,33 +322,7 @@ def single_selection_cut_no_azzentime(data_high_pixel):
     high_pixel_cut = np.array([new_pix, new_time, new_brightness])
     return high_pixel_cut
 
-'''
-def get_track_data(nrun):
-    #hessall_nruns, hessall_i = read_hess_all_runs(np.arange(nrun, nrun+1))
-    #hessall_i = np.array(hessall_i).astype(int)
-    #hessall_nruns = np.array(hessall_nruns).astype(int)
-    #hessall_nruns = np.genfromtxt(home_path+"hessall_all_tels.txt")
-    #hessall_nruns = hessall_nruns.astype(int)
-    #print(hessall_nruns)
-    if int(nrun) in hessall_nruns:
-        data = read_single_run(nrun)
-        print("Read_single_run_success")
-    else: 
-        print(nrun, "not viable run")
-        return np.array([[-1],[-1],[-1]] )
-    print("Entries before cut:",len(data[0]), ", unique entries:", len(np.unique(data[0])))
-    #If threshold increase is neccessary, then it should be here...
-    data = single_selection_cut(data, az_zen_time)
-    print("Entries after cut:",len(data[0]), ", unique entries:", len(np.unique(data[0])))
-    if len(np.unique(data[0])) <4:
-        print("Too few unique pixel left")
-        return np.array([[-1],[-1],[-1]] )
-        #continue
-    if np.max(data[1])<10:
-        print("Very short run")
-        return np.array([[-1],[-1],[-1]] )
-    return data
-'''
+
 
 def plot_track_time(data):
     if len(data[0]) == 1:
@@ -328,23 +338,9 @@ def plot_track_time(data):
     plt.show()
     return
 
-'''
-def plot_time_in_track(data):
-    if len(data[0]) == 1:
-        print("Invalid data, plot is not done")
-        return
-    x = flash_geom_x[np.array(data[0]).astype(int)]
-    y = flash_geom_y[np.array(data[0]).astype(int)]
-    plt.figure(figsize = (8,6))
-    plt.scatter(x,y, c = data[1], cmap = "jet", vmin = np.min(data[1])-1, vmax = np.max(data[1])+1 )
-    plt.colorbar(label = "time in track [s]")
-    plt.xlabel("Camera x-pos", fontsize = 14)
-    plt.ylabel("Camera y-pos", fontsize = 14)
-    draw_box()
-    plt.show()
-    return
-'''
 
+# Plot all tracks' last entry of a pixel timestamp with
+# the colorbar denoting the time sonce the beginning of each track
 def plot_time_in_track(tracks):
     if len(tracks[0][0]) == 1:
         print("Invalid data, plot is not done")
@@ -361,100 +357,48 @@ def plot_time_in_track(tracks):
                 vmin = np.min(data[1])-1, vmax = np.max(data[1])+1,
                 marker = "H", s = 30)
     plt.colorbar(label = "Time in Track [s]")
-    plt.xlabel("Y-Coordinate [m]")#, fontsize = 14)
-    plt.ylabel("X-Coordinate [m]")#, fontsize = 14)
+    plt.xlabel("X-Coordinate [m]")#, fontsize = 14)
+    plt.ylabel("Y-Coordinate [m]")#, fontsize = 14)
     draw_box()
     return
 
-
-
-def plot_track_brightness(data):
-    if len(data[0]) == 1:
+# Plot the average brightness in a pixel of a track
+# for a numba.typed.List() of tracks
+def plot_brightness_in_track(tracks):
+    if tracks[0][0][0] == -1:
         print("Invalid data, plot is not done")
         return
-    x = flash_geom_x[np.array(data[0]).astype(int)]
-    y = flash_geom_y[np.array(data[0]).astype(int)]
-    plt.scatter(x,y, c = data[2], cmap = "jet", vmin = 900, vmax = np.max(data[2]))
-    plt.colorbar(label = "Brightness [MHz]")    
-    plt.xlabel("Camera x-pos")
-    plt.ylabel("Camera y-pos")
-    draw_box()
-    plt.show()
-    return
-def plot_avg_pix_brightness(data):
-    if len(data[0]) == 1:
-        print("Invalid data, plot is not done")
-        return
-    x = flash_geom_x[np.array(data[0]).astype(int)]
-    y = flash_geom_y[np.array(data[0]).astype(int)]
-    unique_pix = np.unique(data[0])
-    avg_brightness = np.array([np.average(data[2][np.array([idx for idx in range(len(data[0])) 
-                                                            if data[0][idx] == pix])]) for pix in unique_pix])
-    x = flash_geom_x[np.array(unique_pix).astype(int)]
-    y = flash_geom_y[np.array(unique_pix).astype(int)]
-    plt.figure(figsize = (8,6))
-    plt.scatter(x,y, c = avg_brightness, cmap = "jet", vmin = 900, vmax = np.max(avg_brightness))
-    plt.colorbar(label = "Brightness [MHz]")
-    plt.xlabel("Camera x-pos", fontsize = 14)
-    plt.ylabel("Camera y-pos", fontsize = 14)
-    draw_box()
-    plt.show()
-    return
-'''
-@jit 
-##################Best Sorter yet##################
-
-#Backup Version
-def track_sorter(dict_pix, dict_tmp, dict_brightness, typed_nn_pixels):#typed_nn_pixels needed to work together with @jit
-    if len(dict_pix)==0:
-        tracks = List([[[-1.],[-1.],[-1.]]])
-        possible_meteorites = List([[[-1.],[-1.],[-1.]]])
-        #It is not possible to have neg. values in track, hence if -1, no track was found
-        return tracks, possible_meteorites
-    pix = list(dict_pix)
-    tmp = list(dict_tmp)
-    brightness = list(dict_brightness)   
-    nn_pixels = list(typed_nn_pixels)
-    
-    tracks = List([ [[float(pix[0])],[float(tmp[0])], [float(brightness[0])]]])
-    for i in range(1, len(pix)):
-        appended_to_track = False
-        for N in range(len(tracks)):            
-            if tmp[i]-5 < tracks[N][1][-1]:
-                if len([x for x in nn_pixels[int(pix[i])] if x in tracks[N][0][-20:]])>0:
-                    tracks[N][0].append(pix[i])
-                    tracks[N][1].append(tmp[i])
-                    tracks[N][2].append(brightness[i])
-                    appended_to_track  = True 
-                    break 
-        if appended_to_track == False:
-            tracks.append([[float(pix[i])],[float(tmp[i])], [float(brightness[i])]])
-
-    possible_meteorites = List([[[-1.],[-1.],[-1.]]])
-    to_remove = np.full((1,len(tracks)), -1)[0]
+    Data = [np.array([]),np.array([]),np.array([])]
     for N in range(len(tracks)):
-        unique_t = np.unique(np.array(tracks[N][1]))
-        if len(np.unique(np.array(tracks[N][0])))<4:
-            possible_meteorites.append(tracks[N])
-            to_remove[N] = N
-        elif tracks[N][1][-1]-tracks[N][1][0]<3:
-            possible_meteorites.append(tracks[N])
-            to_remove[N] = N
-    del possible_meteorites[0]
-    if len(possible_meteorites)==0:
-        possible_meteorites = List([[[-1.],[-1.],[-1.]]])
+        Data[1] = np.append(Data[1], np.array(tracks[N][1])-tracks[N][1][0])
+        Data[0] = np.append(Data[0], np.array(tracks[N][0]))
+        Data[2] = np.append(Data[2], np.array(tracks[N][2]))
+    fig = plt.figure(figsize = (7* 0.69,5* 0.69), constrained_layout = True)
+    ax = plt.subplot(111)
+    x = []
+    y = []
+    brightness = []
+    unique_pix = np.unique(Data[0])
+    for i in range(len(unique_pix)):
+        x.append(flash_geom_x[int(unique_pix[i])])
+        y.append(flash_geom_y[int(unique_pix[i])])
+        b = [Data[2][j] for j in range(len(Data[0])) if int(Data[0][j])== int(unique_pix[i])]
+        brightness.append(np.average(b))
+    print(len(x), len(y), len(brightness))
+    im = ax.scatter(x,y, c = brightness, cmap = "jet",
+                    marker = "H", s = 13)
+    ax.set_xlabel("X-Coordinate [m]")
+    ax.set_ylabel("Y-Coordinate [m]")
+    fig.colorbar(im, label = "Average Brightness [MHz]")
+    draw_box()
+    return 
 
-    to_remove = to_remove[to_remove != -1]
-    for i in range(len(to_remove)):
-        del tracks[to_remove[-(i+1)]]
-    if len(tracks)==0:
-        tracks = List([[[-1.],[-1.],[-1.]]])
-    return tracks, possible_meteorites
-
-'''
-
+#Use track_sorter_fast(data), as it is less tedious to write than this one
+#This produces the list of trails and a list of all the rest
+#The rest also contains meteorites, hence the naming of the variable
 @jit
-def track_sorter(dict_pix, dict_tmp, dict_brightness, typed_nn_pixels):#typed_nn_pixels needed to work together with @jit                                             
+def track_sorter(dict_pix, dict_tmp, dict_brightness, typed_nn_pixels):
+    #typed_nn_pixels inst needed to work together with @jit
     if len(dict_pix)==0:
         tracks = List([[[-1.],[-1.],[-1.]]])
         possible_meteorites = List([[[-1.],[-1.],[-1.]]])
@@ -514,6 +458,7 @@ def track_sorter(dict_pix, dict_tmp, dict_brightness, typed_nn_pixels):#typed_nn
         tracks = List([[[-1.],[-1.],[-1.]]])
     return tracks, possible_meteorites
 
+#Use this instead of track_sorter
 @jit
 def track_sorter_fast(data):
     tracks, possible_meteorites = track_sorter(data[0], data[1], data[2], typed_nn_pix)
@@ -522,6 +467,7 @@ def track_sorter_fast(data):
 
 
 
+#Old Idea, for meteorite searches, however it was scrapped
 @jit 
 def adding_possible_meteorites(pos_met):
     tmp = List(pos_met)
@@ -556,6 +502,9 @@ def adding_possible_meteorites(pos_met):
         del tmp[index_to_del[-(i+1)]]
     return tmp, trash
 
+
+#Idea of adding together potentially severed tracks be the angle of the vector
+#between the first and last entry, however needs more work to properly function
 @jit
 def angle_adding_of_tracks(tracklist):
     track_added = []
@@ -596,21 +545,7 @@ def angle_adding_of_tracks(tracklist):
     return track_added
 
 
-##################read data from az_zen_file.txt:##################
-def read_az_zen_file(dict_high_pix_keys):
-    os.chdir(home_path)
-    azzennruns = np.loadtxt("az_zen_file.txt", usecols = 0, delimiter = ";")
-    azzenaz = np.loadtxt("az_zen_file.txt", usecols = 1, delimiter = ";")
-    azzenzen = np.loadtxt("az_zen_file.txt", usecols = 2, delimiter = ";")
-    azzenutc = np.loadtxt("az_zen_file.txt", dtype=str,  usecols = 3, delimiter = ";")
-    azzentime = np.loadtxt("az_zen_file.txt", usecols = 4, delimiter = ";")
-    azzen_nruns = [azzennruns[i] for i in range(len(azzennruns)) if azzennruns[i] in np.array(list(dict_high_pix_keys))]
-    azzen_az = [azzenaz[i] for i in range(len(azzenaz)) if azzennruns[i] in np.array(list(dict_high_pix_keys))]
-    azzen_zen = [azzenzen[i] for i in range(len(azzenzen)) if azzennruns[i] in np.array(list(dict_high_pix_keys))]
-    azzen_utc = [azzenutc[i] for i in range(len(azzenutc)) if azzennruns[i] in np.array(list(dict_high_pix_keys))]
-    azzen_time = [azzentime[i] for i in range(len(azzentime)) if azzennruns[i] in np.array(list(dict_high_pix_keys))]
-    return azzen_nruns, azzen_az, azzen_zen, azzen_utc, azzen_time 
-
+#used in the track_sorter
 @jit
 def get_velocity(trail_pix, trail_time):
     x_trail, y_trail = pix_to_xy(trail_pix)
@@ -639,6 +574,7 @@ def get_mean_brightness(trail_brightness):
 def get_cumul_brightness(trail_brightness):
     cumul_bright = np.sum(trail_brightness)
     return cumul_bright
+
 
 def convert_to_time_in_night(azzen_time):
     t = Time(azzen_time, format = 'unix', scale='utc')
