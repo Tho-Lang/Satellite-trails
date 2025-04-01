@@ -1,0 +1,3 @@
+If using this remember to source associated root and hap versions, then conda activate hap, also check LD_LIBRARY_PATH
+
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/lfs/l7/hess/users/spencers/realdata/root_build/lib"

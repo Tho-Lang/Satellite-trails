@@ -1,0 +1,142 @@
+****** CREATE NEW HESSARRAY WITH NEW SYSTEMS *****
+[32;01mSashAstro::Initializer> [0mSashAstro::Initializer::SetSystems
+Creating new telescope 3
+Creating new telescope 4
+Creating new telescope 2
+Creating new telescope 5
+Creating new telescope 1
+Using HESSROOT
+Time Elapsed: 977.9182250499725
+
+ *** Break *** segmentation violation
+
+
+
+===========================================================
+There was a crash.
+This is the entire stack trace of all threads:
+===========================================================
+
+Thread 9 (Thread 0x7fb9f3452700 (LWP 29506)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 8 (Thread 0x7fb9f2c51700 (LWP 29507)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 7 (Thread 0x7fb9f2450700 (LWP 29508)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 6 (Thread 0x7fb9f1c4f700 (LWP 29509)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 5 (Thread 0x7fb9f144e700 (LWP 29511)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 4 (Thread 0x7fb9f0c4d700 (LWP 29512)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 3 (Thread 0x7fb9f044c700 (LWP 29513)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 2 (Thread 0x7fb9efc4b700 (LWP 29523)):
+#0  0x00007fbb502a7a35 in pthread_cond_wait
+
+GLIBC_2.3.2 () from /lib64/libpthread.so.0
+#1  0x00007fb9f3474c30 in th_worker(void*) () from /lfs/l7/hess/users/spencers/.conda/envs/hap/lib/python3.10/site-packages/numexpr/interpreter.cpython-310-x86_64-linux-gnu.so
+#2  0x00007fbb502a3ea5 in start_thread () from /lib64/libpthread.so.0
+#3  0x00007fbb4f6bbb0d in clone () from /lib64/libc.so.6
+
+Thread 1 (Thread 0x7fbb506b0740 (LWP 29369)):
+#0  0x00007fbb4f682659 in waitpid () from /lib64/libc.so.6
+#1  0x00007fbb4f5fff62 in do_system () from /lib64/libc.so.6
+#2  0x00007fbb4f600311 in system () from /lib64/libc.so.6
+#3  0x00007fbb456c2169 in TUnixSystem::StackTrace (this=0x557993730fe0) at /lfs/l7/hess/users/spencers/realdata/root_src/core/unix/src/TUnixSystem.cxx:2419
+#4  0x00007fbb456c3dac in TUnixSystem::DispatchSignals (this=0x557993730fe0, sig=kSigSegmentationViolation) at /lfs/l7/hess/users/spencers/realdata/root_src/core/unix/src/TUnixSystem.cxx:1294
+#5  <signal handler called>
+#6  0x00007fbb4f984a98 in main_arena () from /lib64/libc.so.6
+#7  0x00007fbb456948f6 in TClass::Destructor (this=0x55799580a370, obj=<optimized out>, dtorOnly=dtorOnly
+entry=false) at /lfs/l7/hess/users/spencers/realdata/root_src/core/meta/src/TClass.cxx:4404
+#8  0x00007fbb48b3358b in PyROOT::op_dealloc_nofree (pyobj=pyobj
+entry=0x7fb9f36a8580) at /lfs/l7/hess/users/spencers/realdata/root_src/bindings/pyroot/src/ObjectProxy.cxx:29
+#9  0x00007fbb48b335c9 in PyROOT::(anonymous namespace)::op_dealloc (pyobj=0x7fb9f36a8580) at /lfs/l7/hess/users/spencers/realdata/root_src/bindings/pyroot/src/ObjectProxy.cxx:122
+#10 0x000055799116edd6 in subtype_dealloc () at /usr/local/src/conda/python-3.10.6/Objects/object.c:2229
+#11 0x000055799113b679 in _Py_Dealloc (op=<optimized out>) at /usr/local/src/conda/python-3.10.6/Objects/object.c:2292
+#12 _Py_DECREF (op=<optimized out>) at /usr/local/src/conda/python-3.10.6/Include/object.h:500
+#13 _Py_XDECREF (op=<optimized out>) at /usr/local/src/conda/python-3.10.6/Include/object.h:567
+#14 insertdict () at /usr/local/src/conda/python-3.10.6/Objects/dictobject.c:1145
+#15 0x000055799113af1d in PyDict_SetItem.localalias () at /usr/local/src/conda/python-3.10.6/Objects/dictobject.c:1623
+#16 0x00005579911c56c4 in _PyModule_ClearDict.localalias () at /usr/local/src/conda/python-3.10.6/Objects/moduleobject.c:621
+#17 0x0000557991235c78 in finalize_modules_clear_weaklist (verbose=0, weaklist=0x7fbb50667800, interp=0x557992d31c50) at /usr/local/src/conda/python-3.10.6/Python/pylifecycle.c:1467
+#18 finalize_modules () at /usr/local/src/conda/python-3.10.6/Python/pylifecycle.c:1549
+#19 0x0000557991234cff in Py_FinalizeEx.localalias () at /usr/local/src/conda/python-3.10.6/Python/pylifecycle.c:1787
+#20 0x0000557991226df8 in Py_RunMain.localalias () at /usr/local/src/conda/python-3.10.6/Modules/main.c:672
+#21 0x00005579911f5389 in Py_BytesMain (argc=<optimized out>, argv=<optimized out>) at /usr/local/src/conda/python-3.10.6/Modules/main.c:1090
+#22 0x00007fbb4f5df555 in __libc_start_main () from /lib64/libc.so.6
+#23 0x00005579911f5291 in _start () at /usr/local/src/conda/python-3.10.6/Include/internal/pycore_long.h:24
+===========================================================
+
+
+The lines below might hint at the cause of the crash.
+If they do not help you then please submit a bug report at
+http://root.cern.ch/bugs. Please post the ENTIRE stack trace
+from above as an attachment in addition to anything else
+that might help us fixing this issue.
+===========================================================
+#6  0x00007fbb4f984a98 in main_arena () from /lib64/libc.so.6
+#7  0x00007fbb456948f6 in TClass::Destructor (this=0x55799580a370, obj=<optimized out>, dtorOnly=dtorOnly
+entry=false) at /lfs/l7/hess/users/spencers/realdata/root_src/core/meta/src/TClass.cxx:4404
+#8  0x00007fbb48b3358b in PyROOT::op_dealloc_nofree (pyobj=pyobj
+entry=0x7fb9f36a8580) at /lfs/l7/hess/users/spencers/realdata/root_src/bindings/pyroot/src/ObjectProxy.cxx:29
+#9  0x00007fbb48b335c9 in PyROOT::(anonymous namespace)::op_dealloc (pyobj=0x7fb9f36a8580) at /lfs/l7/hess/users/spencers/realdata/root_src/bindings/pyroot/src/ObjectProxy.cxx:122
+#10 0x000055799116edd6 in subtype_dealloc () at /usr/local/src/conda/python-3.10.6/Objects/object.c:2229
+#11 0x000055799113b679 in _Py_Dealloc (op=<optimized out>) at /usr/local/src/conda/python-3.10.6/Objects/object.c:2292
+#12 _Py_DECREF (op=<optimized out>) at /usr/local/src/conda/python-3.10.6/Include/object.h:500
+#13 _Py_XDECREF (op=<optimized out>) at /usr/local/src/conda/python-3.10.6/Include/object.h:567
+#14 insertdict () at /usr/local/src/conda/python-3.10.6/Objects/dictobject.c:1145
+#15 0x000055799113af1d in PyDict_SetItem.localalias () at /usr/local/src/conda/python-3.10.6/Objects/dictobject.c:1623
+#16 0x00005579911c56c4 in _PyModule_ClearDict.localalias () at /usr/local/src/conda/python-3.10.6/Objects/moduleobject.c:621
+#17 0x0000557991235c78 in finalize_modules_clear_weaklist (verbose=0, weaklist=0x7fbb50667800, interp=0x557992d31c50) at /usr/local/src/conda/python-3.10.6/Python/pylifecycle.c:1467
+#18 finalize_modules () at /usr/local/src/conda/python-3.10.6/Python/pylifecycle.c:1549
+#19 0x0000557991234cff in Py_FinalizeEx.localalias () at /usr/local/src/conda/python-3.10.6/Python/pylifecycle.c:1787
+#20 0x0000557991226df8 in Py_RunMain.localalias () at /usr/local/src/conda/python-3.10.6/Modules/main.c:672
+#21 0x00005579911f5389 in Py_BytesMain (argc=<optimized out>, argv=<optimized out>) at /usr/local/src/conda/python-3.10.6/Modules/main.c:1090
+#22 0x00007fbb4f5df555 in __libc_start_main () from /lib64/libc.so.6
+#23 0x00005579911f5291 in _start () at /usr/local/src/conda/python-3.10.6/Include/internal/pycore_long.h:24
+===========================================================
+
+
